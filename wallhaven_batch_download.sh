@@ -25,7 +25,7 @@ function input_and_check_website
 	echo -e "\033[32m How many wallpaper pages you wanna download? \033[0m"	
 	read wdpn #wanna download pages number
 	# wget --spider when invoked with this option, wget will behave as a web spider, which means that it will not download the pages, just check that they are there
-	proxychains -q wget --spider "$iweb" 2>/dev/null >>/dev/null
+	wget --spider "$iweb" 2>/dev/null >>/dev/null
 	if [ $? -ne 0 ];
 	then
 		echo "Input website is invaild, please try it again:"
@@ -37,7 +37,7 @@ function href_list_from_search
 {
 	for((page=1;page<=wdpn;page++));
 	do
-	proxychains -q curl -s $iweb&page=$page | grep -o 'href=\"https:\/\/wallhaven.cc\/w\/[^"]*"'| sed 's/href=\"\(.*\)"/\1/g' >> ${dltf[0]}
+	curl -s $iweb&page=$page | grep -o 'href=\"https:\/\/wallhaven.cc\/w\/[^"]*"'| sed 's/href=\"\(.*\)"/\1/g' >> ${dltf[0]}
 	allcwn=`sed -n '$=' ${dltf[0]}` # all collected wallpaper number
 	done
 }
@@ -46,7 +46,7 @@ function href_list_from_other
 {
 	for((page=1;page<=wdpn;page++));
 	do
-	proxychains -q curl -s $iweb?page=$page | grep -o 'href=\"https:\/\/wallhaven.cc\/w\/[^"]*"'| sed 's/href=\"\(.*\)"/\1/g' >> ${dltf[0]}
+	curl -s $iweb?page=$page | grep -o 'href=\"https:\/\/wallhaven.cc\/w\/[^"]*"'| sed 's/href=\"\(.*\)"/\1/g' >> ${dltf[0]}
 	allcwn=`sed -n '$=' ${dltf[0]}` # all collected wallpaper number
 	done
 }
@@ -72,7 +72,7 @@ function download_wallpaper_from_search
 	for web in `cat ${dltf[0]}`
 	do
 		((fwn++))
-	proxychains -q curl -s $web | grep -o  '<img id="wallpaper" src="https://w.wallhaven.cc/[^"]*"'| sed  's/.*src=\"\(.*\)\"/\1/g' >> ${dltf[1]}
+	curl -s $web | grep -o  '<img id="wallpaper" src="https://w.wallhaven.cc/[^"]*"'| sed  's/.*src=\"\(.*\)\"/\1/g' >> ${dltf[1]}
 		printf "\b\b\b\b\b%2d/%2d" $fwn $allcwn
 	done 
 	# Start Download
@@ -90,7 +90,7 @@ function download_wallpaper_from_search
 			continue
 		else
 		echo -e "\033[35m Downloading: $dweb \033[0m"
-		proxychains -q  wget -q  --show-progress $dweb 
+		wget -q  --show-progress $dweb 
 		echo -e "\033[32m $dweb Download Successed \033[0m"
 		echo 
 		fi
